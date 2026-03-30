@@ -1,0 +1,2 @@
+# Wire Minnow
+ TUI tool replicating the features of "Wireshark" using the ncurses and PcapPlusPlus libraries for C++
