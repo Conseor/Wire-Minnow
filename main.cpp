@@ -9,7 +9,6 @@
         the packet capturing functionality will be within another file. This driver is primarily focused on the
         initialization of windows, panels, and other `ncurses` functionality.
 
-
 */
 
 #include <iostream>
@@ -40,6 +39,8 @@ int main(int argc, char* argv[]) {
 
     curs_set(0);
     
+    cbreak();                   // I am not fully sure what this is useful for, as our commands ran fine before.
+
     // Help Window/Panel Setup
     getmaxyx(stdscr,row, col);
     

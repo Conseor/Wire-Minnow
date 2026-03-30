@@ -1,12 +1,12 @@
 CC = g++
 CFLAGS = --std=c++20 -Wall -pedantic -g #-Werror
-LIB = -lncurses -lpanel
+LIB = -lncurses -lpanel -lmenu
 # Your .hpp files
 DEPS = # RandWriter.hpp
 # Your compiled .o files
 OBJECTS = # RandWriter.o
 # The name of your program
-PROGRAM = WireMinow
+PROGRAM = WireMinnow
 # The name of the Library
 # ARCHIVE = TextWriter.a
 
