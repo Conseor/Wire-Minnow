@@ -12,8 +12,6 @@
 
 */
 
-
-
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -23,11 +21,9 @@
 #include <math.h>
 #include <ncurses.h>
 #include <panel.h>
+#include "keys.hpp"
 // #include <MacAddress.h>
 
-#define CTRL_H 8
-#define CTRL_P 16
-#define CTRL_X 24
 
 int main(int argc, char* argv[]) {
 
@@ -38,25 +34,19 @@ int main(int argc, char* argv[]) {
     const string title = "Wire Minnow";
     const string helpmsg = "For Help, press [CTRL-H]";
 
-    // Opening Screen for Wire Minnow
-        // "Wire Minnow"
-        // Press [Ctrl-H] for Help
-        // Press [Ctrl-P] to Start
-
     initscr();
     
     // Makes Cursor Invisible
 
     curs_set(0);
-
+    
+    // Help Window/Panel Setup
     getmaxyx(stdscr,row, col);
-
+    
     prow = 20;
     pcol = 40;
     x = 0.5 * row - (0.5*prow);
     y = 0.5 * col - (0.5*pcol);
-
-    // Help Window/Panel Setup
 
     WINDOW* helpwin = newwin(prow, pcol, x, y);
     PANEL* helppan = new_panel(helpwin);
@@ -71,21 +61,30 @@ int main(int argc, char* argv[]) {
         {"[CTRL-H]","\t Show Help Menu"},
         {"[CTRL-X]","\t Exit Wire Minnow"},
         {"[CTRL-P]","\t Play/Pause Recording"},
-        {"[CTRL-F]","\t ~~~~~~~~~~"},
-        {"[CTRL-S]","\t ~~~~~~~~~~"}
+        {"[CTRL-F]","\t Filter by Property"},
+        {"[CTRL-S]","\t Search for Packet"}
     };
-
 
     // Display all of the help commands in the helpwin window.
     // Write to the help window before display to reduce repetition layer on.
+    // This may be altered to a Menu in the future ***
 
-    for (int hcol = 2; hcol <= help_commands.size() * 2; hcol += 2) {
+    for (unsigned long hcol = 2; hcol <= help_commands.size() * 2; hcol += 2) {
         wattron(helpwin, A_BOLD);
         mvwprintw(helpwin, hcol, 2, "%s", help_commands.at((hcol / 2) - 1).first.c_str());
         wattroff(helpwin, A_BOLD);
         mvwprintw(helpwin, hcol, 11, "%s", help_commands.at((hcol / 2) - 1).second.c_str());
     }
     
+    // Recording Window Setup
+
+    WINDOW* recwin = newwin(row, col, 0, 0);
+    PANEL* recpan = new_panel(recwin);
+
+    box(recwin, 0, 0);
+    wattron(recwin, A_BOLD);
+    mvwprintw(recwin, 0, 2, "| Recording Window |");
+    wattroff(recwin, A_BOLD);
 
     // Title msg
 
@@ -103,7 +102,9 @@ int main(int argc, char* argv[]) {
 
     refresh();
     wrefresh(helpwin);
+    wrefresh(recwin);
     hide_panel(helppan);
+    hide_panel(recpan);
 
     // Input Section
 
@@ -124,6 +125,13 @@ int main(int argc, char* argv[]) {
                 break;
             case CTRL_P:
                 // Begin Recording
+                if(panel_hidden(recpan)) {
+                    show_panel(recpan);
+                } else {
+                    hide_panel(recpan);
+                }
+                update_panels();
+                doupdate();
                 break;
             case CTRL_X:
                 endwin();

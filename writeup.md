@@ -35,3 +35,14 @@ I intend for this program to rely on a couple of libraries
 - Resize application with changes to terminal/window size
 - Add help menu
 - 
+
+## NOTES ON ADDITIONAL FEATURES
+
+We are able to use "newpad()" to extend a screen if our default is too large for the terminal that our application is running on.
+    - Solves the issue where we are not able to show the help page when the terminal screen is too small
+    - May have to be a future addition, where this will become a potential problem in the future
+
+
+Managing Screen Switching
+    - The best way we are going to do this is utilizing Panels, as we will be able to make them disappear easily.
+    - This will also prevent having to redraw our screens constantly, but will leave more to clean up at the end!
