@@ -21,7 +21,10 @@
 #include <ncurses.h>
 #include <panel.h>
 #include "keys.hpp"
+#include "enums.hpp"
 // #include <MacAddress.h>
+
+void recording_driver(WINDOW* win, PANEL* pan);
 
 
 int main(int argc, char* argv[]) {
@@ -84,7 +87,7 @@ int main(int argc, char* argv[]) {
 
     box(recwin, 0, 0);
     wattron(recwin, A_BOLD);
-    mvwprintw(recwin, 0, 2, "| Recording Window |");
+    mvwprintw(recwin, 0, 2, " Recording Window ");
     wattroff(recwin, A_BOLD);
 
     // Title msg
@@ -126,11 +129,11 @@ int main(int argc, char* argv[]) {
                 break;
             case CTRL_P:
                 // Begin Recording
-                if(panel_hidden(recpan)) {
-                    show_panel(recpan);
-                } else {
-                    hide_panel(recpan);
-                }
+                show_panel(recpan);
+                recording_driver(recwin, recpan);
+                hide_panel(recpan);
+
+                // This should later be changed to 
                 update_panels();
                 doupdate();
                 break;
@@ -140,9 +143,79 @@ int main(int argc, char* argv[]) {
                 break;
         }
         refresh();
+
+        // Naps for a ms so the computer doesn't explode
     }
 
     endwin();
 
     return 1;
+}
+
+void recording_driver(WINDOW* win, PANEL* pan) {
+
+    using namespace std;
+    int input;
+    int selected = 0;
+    vector<pair<string, Sort>> header = {
+        {"No.",NA},
+        {"Time",NA},
+        {"Source",NA},
+        {"Destination",NA},
+        {"Protocol",NA},
+        {"Length", NA},
+        {"Info",NA}
+    };
+
+    while (true) {
+        int spacing = 2;
+
+        // Used so wgetch isn't blocking when implementing pcap later
+        wtimeout(win, 0);
+
+        input = wgetch(win);
+        noecho();
+        keypad(win, true);
+
+        switch(input) {
+
+            case KEY_RIGHT:
+                if (selected < static_cast<int>(header.size()-1))
+                    selected++;
+                break;
+            case KEY_LEFT:
+                if(selected > 0)
+                    selected--;
+                break;
+            case CTRL_X:
+                return;
+        }
+
+        
+        for (int i = 0; i < static_cast<int>(header.size()); i++) {
+            if (i == selected)
+                wattron(win, A_REVERSE);
+            wattron(win, A_BOLD);
+            mvwprintw(win, 2, spacing, "%s", header.at(i).first.c_str());
+            wattroff(win, A_BOLD);
+            wattroff(win, A_REVERSE);
+
+            spacing += header.at(i).first.length();
+
+            mvwprintw(win, 2, spacing, " | ");
+
+            spacing += 3;
+            
+        }
+
+
+        wrefresh(win);
+        update_panels();
+        doupdate();
+
+        napms(1);
+    }
+
+    
+    return;
 }

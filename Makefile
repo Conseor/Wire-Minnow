@@ -2,9 +2,9 @@ CC = g++
 CFLAGS = --std=c++20 -Wall -pedantic -g #-Werror
 LIB = -lncurses -lpanel -lmenu
 # Your .hpp files
-DEPS = # RandWriter.hpp
+DEPS = #enums.cpp
 # Your compiled .o files
-OBJECTS = # RandWriter.o
+OBJECTS = #enums.o
 # The name of your program
 PROGRAM = WireMinnow
 # The name of the Library

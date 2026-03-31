@@ -1,0 +1,1 @@
+enum Sort {NA, LOW, HIGH};
