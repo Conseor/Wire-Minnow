@@ -8,3 +8,4 @@
 #define CTRL_H 8
 #define CTRL_P 16
 #define CTRL_X 24
+#define KEY_ENTR '\n'

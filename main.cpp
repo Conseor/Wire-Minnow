@@ -152,6 +152,17 @@ int main(int argc, char* argv[]) {
     return 1;
 }
 
+
+/*
+    Purpose
+        Acts as the main driver for the recording process.
+    Input
+        WINDOW* -- Used for writing to the recwin defined in main
+        PANEL*  -- Used for managing te recpan if needed
+    Output
+        void
+*/
+
 void recording_driver(WINDOW* win, PANEL* pan) {
 
     using namespace std;
@@ -167,15 +178,17 @@ void recording_driver(WINDOW* win, PANEL* pan) {
         {"Info",NA}
     };
 
+        noecho();
+        keypad(win, true);
+        cbreak();
+
     while (true) {
         int spacing = 2;
-
+        char sortBy;
         // Used so wgetch isn't blocking when implementing pcap later
         wtimeout(win, 0);
 
         input = wgetch(win);
-        noecho();
-        keypad(win, true);
 
         switch(input) {
 
@@ -186,6 +199,13 @@ void recording_driver(WINDOW* win, PANEL* pan) {
             case KEY_LEFT:
                 if(selected > 0)
                     selected--;
+                break;
+            case KEY_ENTR:
+                for(int i = 0; i < static_cast<int>(header.size()); i++) {
+                    if (i != selected)
+                        header.at(i).second = NA;
+                }
+                header.at(selected).second = static_cast<Sort>((header.at(selected).second + 1) % 3);
                 break;
             case CTRL_X:
                 return;
@@ -202,9 +222,17 @@ void recording_driver(WINDOW* win, PANEL* pan) {
 
             spacing += header.at(i).first.length();
 
-            mvwprintw(win, 2, spacing, " | ");
+            if (header.at(i).second == LOW) {
+                sortBy = '-';
+            } else if (header.at(i).second == HIGH) {
+                sortBy = '+';
+            } else {
+                sortBy = ' ';
+            }
 
-            spacing += 3;
+            mvwprintw(win, 2, spacing, " %c | ", sortBy);
+
+            spacing += 5;
             
         }
 
