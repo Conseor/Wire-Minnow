@@ -168,14 +168,21 @@ void recording_driver(WINDOW* win, PANEL* pan) {
     using namespace std;
     int input;
     int selected = 0;
-    vector<pair<string, Sort>> header = {
-        {"No.",NA},
-        {"Time",NA},
-        {"Source",NA},
-        {"Destination",NA},
-        {"Protocol",NA},
-        {"Length", NA},
-        {"Info",NA}
+
+    /*
+     This is a vector of tuples with 3 sections defined below
+        string - Header Text
+        Sort   - How you're sorting
+        int    - Minimum amount of space the header should take up
+    */
+    vector<tuple<string, Sort, int>> header = {
+        {"No.",NA, 6},
+        {"Time",NA, 8},
+        {"Source",NA, 15},
+        {"Destination",NA, 15},
+        {"Protocol",NA, 8},
+        {"Length", NA, 8},
+        {"Info",NA, 20}
     };
 
         noecho();
@@ -211,7 +218,6 @@ void recording_driver(WINDOW* win, PANEL* pan) {
                 return;
         }
 
-        
         for (int i = 0; i < static_cast<int>(header.size()); i++) {
             if (i == selected)
                 wattron(win, A_REVERSE);
@@ -235,7 +241,6 @@ void recording_driver(WINDOW* win, PANEL* pan) {
             spacing += 5;
             
         }
-
 
         wrefresh(win);
         update_panels();
