@@ -16,12 +16,14 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <tuple>
 #include <algorithm>
 #include <math.h>
 #include <ncurses.h>
 #include <panel.h>
 #include "keys.hpp"
 #include "enums.hpp"
+#include "header.hpp"
 // #include <MacAddress.h>
 
 void recording_driver(WINDOW* win, PANEL* pan);
@@ -175,14 +177,14 @@ void recording_driver(WINDOW* win, PANEL* pan) {
         Sort   - How you're sorting
         int    - Minimum amount of space the header should take up
     */
-    vector<tuple<string, Sort, int>> header = {
-        {"No.",NA, 6},
-        {"Time",NA, 8},
-        {"Source",NA, 15},
-        {"Destination",NA, 15},
-        {"Protocol",NA, 8},
-        {"Length", NA, 8},
-        {"Info",NA, 20}
+    vector<Header> headers = {
+        Header("No.",NA, 6),
+        Header("Time",NA, 8),
+        Header("Source",NA, 15),
+        Header("Destination",NA, 15),
+        Header("Protocol",NA, 8),
+        Header("Length", NA, 8),
+        Header("Info",NA, 20)
     };
 
         noecho();
@@ -200,7 +202,7 @@ void recording_driver(WINDOW* win, PANEL* pan) {
         switch(input) {
 
             case KEY_RIGHT:
-                if (selected < static_cast<int>(header.size()-1))
+                if (selected < static_cast<int>(headers.size()-1))
                     selected++;
                 break;
             case KEY_LEFT:
@@ -208,29 +210,29 @@ void recording_driver(WINDOW* win, PANEL* pan) {
                     selected--;
                 break;
             case KEY_ENTR:
-                for(int i = 0; i < static_cast<int>(header.size()); i++) {
+                for(int i = 0; i < static_cast<int>(headers.size()); i++) {
                     if (i != selected)
-                        header.at(i).second = NA;
+                        headers.at(i).set_order(NA);
                 }
-                header.at(selected).second = static_cast<Sort>((header.at(selected).second + 1) % 3);
+                headers.at(selected).set_order(static_cast<Sort>( ((headers.at(selected).get_order()) + 1) % 3));
                 break;
             case CTRL_X:
                 return;
         }
 
-        for (int i = 0; i < static_cast<int>(header.size()); i++) {
+        for (int i = 0; i < static_cast<int>(headers.size()); i++) {
             if (i == selected)
                 wattron(win, A_REVERSE);
             wattron(win, A_BOLD);
-            mvwprintw(win, 2, spacing, "%s", header.at(i).first.c_str());
+            mvwprintw(win, 2, spacing, "%s", headers.at(i).get_name().c_str());
             wattroff(win, A_BOLD);
             wattroff(win, A_REVERSE);
 
-            spacing += header.at(i).first.length();
+            spacing += headers.at(i).get_padding();
 
-            if (header.at(i).second == LOW) {
+            if (headers.at(i).get_order() == LOW) {
                 sortBy = '-';
-            } else if (header.at(i).second == HIGH) {
+            } else if (headers.at(i).get_order() == HIGH) {
                 sortBy = '+';
             } else {
                 sortBy = ' ';

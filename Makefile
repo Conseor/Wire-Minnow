@@ -1,10 +1,10 @@
 CC = g++
-CFLAGS = --std=c++20 -Wall -pedantic -g #-Werror
+CFLAGS = --std=c++20 -Wall -pedantic -g -Werror
 LIB = -lncurses -lpanel -lmenu
 # Your .hpp files
-DEPS = #enums.cpp
+DEPS = header.hpp #enums.cpp
 # Your compiled .o files
-OBJECTS = #enums.o
+OBJECTS = header.o #enums.o
 # The name of your program
 PROGRAM = WireMinnow
 # The name of the Library
