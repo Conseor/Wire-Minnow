@@ -24,7 +24,6 @@
 #include "keys.hpp"
 #include "enums.hpp"
 #include "header.hpp"
-// #include <MacAddress.h>
 
 void recording_driver(WINDOW* win, PANEL* pan);
 

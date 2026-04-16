@@ -1,7 +1,6 @@
 #include "header.hpp"
 
 
-
 void Header::set_order(Sort new_order) {
     order = new_order;
 }
